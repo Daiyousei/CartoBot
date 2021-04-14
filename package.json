@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/Daiyousei/CartoBot/issues"
   },
-  "homepage": "https://github.com/Daiyousei/CartoBot#readme"
+  "homepage": "https://github.com/Daiyousei/CartoBot#readme",
+  "devDependencies": {
+    "eslint": "^7.24.0"
+  },
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
 }
