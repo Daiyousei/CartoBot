@@ -103,8 +103,10 @@ dist
 # TernJS port file
 .tern-port
 
-#config
+#config and data
 config.json
+data.sqlite3
 
-#idea config files
+#IDE config files
 .idea
+.vscode

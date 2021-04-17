@@ -1,4 +1,8 @@
 {
-  "prefix": "!",
-  "token": "Le-Token-Discord"
+  "token": "Le-Token-Discord",
+  "defaults": {
+    "message": "Nouvelles cartes !",
+    "delay":20,
+    "prefix": "!"
+  }
 }
