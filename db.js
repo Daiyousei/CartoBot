@@ -6,7 +6,7 @@ class DB {
 		this.db = new Database(dbFilePath, { verbose: console.log });
 	}
 
-	getKey(server, channel, key, nochan = false) {
+	getKey(server, channel = null, key, nochan = false) {
 		let ret = null;
 		if (channel !== null) {
 			const stmt = this.db.prepare(`SELECT value
@@ -22,6 +22,7 @@ class DB {
 			const stmt = this.db.prepare(`SELECT value
 			FROM config
 			WHERE server = ?
+			AND channel is null
 			AND key = ?`);
 
 			ret = stmt.all(server, key);
@@ -34,6 +35,46 @@ class DB {
 
 		if (values.length === 0 && defaults[key] !== undefined) return (Array.isArray(defaults[key]) ? defaults[key] : [defaults[key]]);
 		else return values;
+
+	}
+
+	delAllKey(server, channel = null, key) {
+		if (channel !== null) {
+			const stmt = this.db.prepare(`DELETE FROM config
+			WHERE server = ?
+			AND channel = ?
+			AND key = ?`);
+	
+			stmt.run(server, channel, key);
+		}
+		else {
+			const stmt = this.db.prepare(`DELETE FROM config
+			WHERE server = ?
+			AND channel is null
+			AND key = ?`);
+	
+			stmt.run(server, key);
+		}
+	}
+
+	addKey(server, channel = null, key, values) {
+
+		if (!Array.isArray(values)) values = [values];
+
+		for (const value of values) {
+			const stmt = this.db.prepare(`INSERT INTO config
+			(server, channel, key, value)
+			VALUES 
+			(
+				?,
+				?,
+				?,
+				?
+			)
+			ON CONFLICT DO NOTHING`);
+	
+			stmt.run(server, channel, key, value);
+		}
 
 	}
 

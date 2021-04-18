@@ -5,7 +5,7 @@ CREATE TABLE "config" (
 	"key"	TEXT NOT NULL,
 	"value"	TEXT,
 	PRIMARY KEY("ID" AUTOINCREMENT)
-);
+)
 
 CREATE TABLE "cooldowns" (
 	"ID"	INTEGER NOT NULL,
@@ -15,4 +15,11 @@ CREATE TABLE "cooldowns" (
 	"timestamp"	INTEGER NOT NULL,
 	UNIQUE("server","channel","user"),
 	PRIMARY KEY("ID" AUTOINCREMENT)
+)
+
+CREATE UNIQUE INDEX "notnull" ON "config" (
+	"server",
+	ifnull(channel, 0),
+	"key",
+	"value"
 )
