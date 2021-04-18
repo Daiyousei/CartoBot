@@ -72,14 +72,14 @@ module.exports = {
 			break;
 		case 'getuser':
 			const users = db.getKey(message.guild.id, message.channel.id, 'authuser', true);
-			let hl = '';
+			let hl = '-';
 			for (const user of users) {
 				const member = message.guild.members.cache.get(user);
 				let txt;
 				if (member === undefined) txt = `Unknown:${user}`;
 				else txt = `${member}`;
 				
-				if (hl === '') hl = txt;
+				if (hl === '-') hl = txt;
 				else hl = `${hl}, ${txt}`;
 			}
 			message.channel.send(hl);
