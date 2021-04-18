@@ -69,7 +69,7 @@ client.on('message', message => {
 			const delay = db.getKey(message.guild.id, message.channel.id, 'delay')[0];
 
 			if (difference.length > 0 && (cooldownTS < 0 || Math.floor(Date.now() / 1000) - cooldownTS > delay)) {
-				const text = db.getKey(message.guild.id, message.channel.id, 'message')[0];
+				const text = db.getKey(message.guild.id, message.channel.id, 'message', true)[0];
 				message.channel.send(`${hl}, ${text}`);
 			}
 

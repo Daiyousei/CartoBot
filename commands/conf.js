@@ -5,7 +5,8 @@ module.exports = {
 
 		const authorPerms = message.channel.permissionsFor(message.author);
 		if (!authorPerms || !(authorPerms.has('ADMINISTRATOR') || db.getKey(message.guild.id, message.channel.id, 'authuser', true).includes(message.author.id))) {
-			return console.debug(`${message.author.id} tried to config`);
+			console.debug(`${message.author.id} tried to config`);
+			return message.react('❌');
 		}
 
 		if (args.length === 0) {
@@ -25,11 +26,65 @@ module.exports = {
 			db.delAllKey(message.guild.id, message.channel.id, 'highlight');
 			message.react('👍');
 			break;
+
+		case 'setmessage' :
+			if (args.length == 0) return message.reply('Message requis');
+			db.delAllKey(message.guild.id, message.channel.id, 'message');
+			db.addKey(message.guild.id, message.channel.id, 'message', [args.join(' ')]);
+			message.react('👍');
+			break;
+		case 'unsetmessage' :
+			db.delAllKey(message.guild.id, message.channel.id, 'message');
+			message.react('👍');
+			break;
+		case 'getmessage' :
+			message.reply(db.getKey(message.guild.id, message.channel.id, 'message', true)[0]);
+			break;
+
+		case 'setdelay' :
+			if (args.length !== 1 && args[0].match(/^\d+$/)) return message.reply('Delais requis');
+			db.delAllKey(message.guild.id, message.channel.id, 'delay');
+			db.addKey(message.guild.id, message.channel.id, 'delay', [args[0]]);
+			message.react('👍');
+			break;
+		case 'unsetdelay' :
+			db.delAllKey(message.guild.id, message.channel.id, 'delay');
+			message.react('👍');
+			break;
+		case 'getdelay' :
+			message.reply(db.getKey(message.guild.id, message.channel.id, 'delay', true)[0]);
+			break;
+
 		case 'adduser' :
 			if (message.mentions.members.size == 0) return message.reply('Utilisateur requis');
 			db.addKey(message.guild.id, null, 'authuser', Array.from(message.mentions.members.keys()));
 			message.react('👍');
 			break;
+		case 'deluser' :
+			const matchesUser = Array.from(message.content.matchAll(/<@!?(\d+)>/g), x => x[1]);
+			const matchesUnknown = Array.from(message.content.matchAll(/Unknown:(\d+)/g), x => x[1]);
+
+			const match = matchesUser.concat(matchesUnknown);
+
+			if (match.size == 0) return message.reply('Utilisateur requis');
+			db.delKeyValue(message.guild.id, null, 'authuser', match);
+			message.react('👍');
+			break;
+		case 'getuser':
+			const users = db.getKey(message.guild.id, message.channel.id, 'authuser', true);
+			let hl = '';
+			for (const user of users) {
+				const member = message.guild.members.cache.get(user);
+				let txt;
+				if (member === undefined) txt = `Unknown:${user}`;
+				else txt = `${member}`;
+				
+				if (hl === '') hl = txt;
+				else hl = `${hl}, ${txt}`;
+			}
+			message.channel.send(hl);
+			break;
+
 		default : 
 			message.reply('Commande inconnue');
 		}

@@ -105,7 +105,8 @@ dist
 
 #config and data
 config.json
-data.sqlite3
+*.sqlite3
+*.sqlite3-journal
 
 #IDE config files
 .idea

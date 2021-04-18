@@ -78,6 +78,25 @@ class DB {
 
 	}
 
+	delKeyValue(server, channel = null, key, values) {
+
+		if (!Array.isArray(values)) values = [values];
+
+		for (const value of values) {
+			if (channel === null) {
+				const stmt = this.db.prepare('DELETE FROM config WHERE server = ? AND channel is null AND key = ? AND value = ?');
+	
+				stmt.run(server, key, value);
+			}
+			else {
+				const stmt = this.db.prepare('DELETE FROM config WHERE server = ? AND channel = ? AND key = ? AND value = ?');
+	
+				stmt.run(server, channel, key, value);
+			}
+		}
+
+	}
+
 	getCooldown(server, channel, user) {
 		const stmt = this.db.prepare(`SELECT timestamp
 		FROM cooldowns
