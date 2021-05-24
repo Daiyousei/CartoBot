@@ -5,7 +5,7 @@ module.exports = {
 		const { admins } = require('../config.json');
 
 		const authorPerms = message.channel.permissionsFor(message.author);
-		if (!authorPerms || !(authorPerms.has('ADMINISTRATOR') || db.getKey(message.guild.id, message.channel.id, 'authuser', true).includes(message.author.id) || admins.has(message.author.id))) {
+		if (!authorPerms || !(authorPerms.has('ADMINISTRATOR') || db.getKey(message.guild.id, message.channel.id, 'authuser', true).includes(message.author.id) || admins.includes(message.author.id))) {
 			console.debug(`${message.author.id} tried to config`);
 			return message.react('❌');
 		}
