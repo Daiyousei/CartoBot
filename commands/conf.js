@@ -2,9 +2,10 @@ module.exports = {
 	name: 'conf',
 	description: 'Configure Stuff !',
 	execute(message, args, db) {
+		const { admins } = require('../config.json');
 
 		const authorPerms = message.channel.permissionsFor(message.author);
-		if (!authorPerms || !(authorPerms.has('ADMINISTRATOR') || db.getKey(message.guild.id, message.channel.id, 'authuser', true).includes(message.author.id))) {
+		if (!authorPerms || !(authorPerms.has('ADMINISTRATOR') || db.getKey(message.guild.id, message.channel.id, 'authuser', true).includes(message.author.id) || admins.has(message.author.id))) {
 			console.debug(`${message.author.id} tried to config`);
 			return message.react('❌');
 		}
@@ -84,6 +85,17 @@ module.exports = {
 			}
 			message.channel.send(hl);
 			break;
+
+		case 'setdelete':
+			if (db.getKey(message.guild.id, message.channel.id, 'deleteMessage')[0] === 'false') {
+				db.addKey(message.guild.id, message.channel.id, 'deleteMessage', ['true']);
+			}
+			message.react('👍');
+			break;
+		case 'unsetdelete':
+			db.delAllKey(message.guild.id, message.channel.id, 'deleteMessage');
+			message.react('👍');
+			break;			
 
 		default : 
 			message.reply('Commande inconnue');

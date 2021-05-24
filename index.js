@@ -43,7 +43,7 @@ client.on('message', message => {
 		if (message.attachments.size > 0) {
 			// This mesage can trigger a HL
 			// Let's check if we should regarding HL already done in the message
-
+			
 			let hl = '';
 			const tohlroles = [];
 			for (const role of db.getKey(message.guild.id, message.channel.id, 'highlight')) {
@@ -54,7 +54,6 @@ client.on('message', message => {
 				
 			}
 			const gothlroles = [ ...message.mentions.roles.values() ];
-			
 			const b = new Set(gothlroles);
 			const difference = [...tohlroles].filter(x => !b.has(x));
 
@@ -70,7 +69,11 @@ client.on('message', message => {
 
 			if (difference.length > 0 && (cooldownTS < 0 || Math.floor(Date.now() / 1000) - cooldownTS > delay)) {
 				const text = db.getKey(message.guild.id, message.channel.id, 'message', true)[0];
-				message.channel.send(`${hl}, ${text}`);
+				message.channel.send(`${hl}, ${text}`).then((hlmessage) => {
+					if (db.getKey(message.guild.id, message.channel.id, 'deleteMessage')[0] == 'true') {
+						hlmessage.delete({ timeout: 1000 }).catch(console.error);
+					}	
+				});
 			}
 
 			// We update cooldown anyway

@@ -3,6 +3,9 @@
   "defaults": {
     "message": "Nouvelles cartes !",
     "delay":20,
-    "prefix": "!"
-  }
+    "prefix": "!",
+    "deleteMessage":"False"
+  },
+  "admins": [
+  ]
 }
